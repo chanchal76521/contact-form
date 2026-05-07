@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mohit Sagar | Full Stack Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #11111a;
+    --bg3: #1a1a26;
+    --accent: #7c3aed;
+    --accent2: #a855f7;
+    --accent3: #c084fc;
+    --cyan: #22d3ee;
+    --green: #10b981;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --border: rgba(124,58,237,0.2);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    overflow-x: hidden;
+  }
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.2rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: 'Fira Code', monospace;
+    font-size: 1.1rem;
+    color: var(--accent3);
+  }
+  .logo span { color: var(--cyan); }
+  nav ul { list-style: none; display: flex; gap: 2.5rem; }
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    transition: color 0.3s;
+    position: relative;
+  }
+  nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0; height: 1px;
+    background: var(--accent3);
+    transition: width 0.3s;
+  }
+  nav a:hover { color: var(--accent3); }
+  nav a:hover::after { width: 100%; }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 6rem 4rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .hero-glow2 {
+    position: absolute;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(34,211,238,0.08) 0%, transparent 70%);
+    top: 20%; right: 10%;
+    pointer-events: none;
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 900px; }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(124,58,237,0.1);
+    border: 1px solid rgba(124,58,237,0.3);
+    border-radius: 100px;
+    padding: 0.4rem 1rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem;
+    color: var(--accent3);
+    margin-bottom: 2rem;
+    animation: fadeInDown 0.8s ease;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+  @keyframes fadeInDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeInUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes slideInLeft { from { opacity:0; transform:translateX(-30px); } to { opacity:1; transform:translateX(0); } }
+
+  h1.hero-name {
+    font-size: clamp(3rem, 7vw, 6rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+    animation: fadeInUp 0.8s ease 0.2s both;
+  }
+  .gradient-text {
+    background: linear-gradient(135deg, var(--accent3) 0%, var(--cyan) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-subtitle {
+    font-family: 'Fira Code', monospace;
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+    animation: fadeInUp 0.8s ease 0.4s both;
+  }
+  .hero-subtitle span { color: var(--cyan); }
+  .hero-desc {
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 600px;
+    line-height: 1.8;
+    margin-bottom: 2.5rem;
+    animation: fadeInUp 0.8s ease 0.6s both;
+  }
+  .hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; animation: fadeInUp 0.8s ease 0.8s both; }
+  .btn-primary {
+    padding: 0.85rem 2rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--accent2), var(--cyan));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .btn-primary:hover::before { opacity: 1; }
+  .btn-primary span { position: relative; z-index: 1; }
+  .btn-secondary {
+    padding: 0.85rem 2rem;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+  .btn-secondary:hover { border-color: var(--accent3); color: var(--accent3); }
+
+  /* GRID PATTERN */
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  /* SECTIONS */
+  section { padding: 6rem 4rem; position: relative; }
+  .section-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+    color: var(--accent3);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+  }
+  .section-line {
+    width: 60px; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--cyan));
+    border-radius: 2px;
+    margin-bottom: 3rem;
+  }
+
+  /* ABOUT */
+  #about { background: var(--bg2); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+  .about-text p { color: var(--muted); line-height: 1.9; margin-bottom: 1.2rem; font-size: 1.05rem; }
+  .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
+  .stat-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+  }
+  .stat-num { font-size: 2rem; font-weight: 700; color: var(--accent3); }
+  .stat-label { font-size: 0.85rem; color: var(--muted); margin-top: 0.25rem; }
+  .about-visual {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .avatar-ring {
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    animation: rotate 20s linear infinite;
+  }
+  @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .avatar-inner {
+    width: 240px; height: 240px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--bg3), var(--accent) 150%);
+    display: flex; align-items: center; justify-content: center;
+    animation: rotate 20s linear infinite reverse;
+    font-size: 6rem;
+  }
+  .orbit-dot {
+    position: absolute;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--cyan);
+    top: -6px; left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* SKILLS */
+  #skills { background: var(--bg); }
+  .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+  .skill-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .skill-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(124,58,237,0.05), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .skill-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+  .skill-card:hover::before { opacity: 1; }
+  .skill-icon { font-size: 2rem; margin-bottom: 1rem; }
+  .skill-card h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; color: var(--text); }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .tag {
+    background: rgba(124,58,237,0.1);
+    border: 1px solid rgba(124,58,237,0.2);
+    color: var(--accent3);
+    padding: 0.3rem 0.75rem;
+    border-radius: 100px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem;
+  }
+  .tag.cyan { background: rgba(34,211,238,0.1); border-color: rgba(34,211,238,0.2); color: var(--cyan); }
+  .tag.green { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.2); color: var(--green); }
+
+  /* PROJECTS */
+  #projects { background: var(--bg2); }
+  .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 2rem; }
+  .project-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .project-card:hover { border-color: var(--accent3); transform: translateY(-6px); box-shadow: 0 20px 60px rgba(124,58,237,0.15); }
+  .project-num {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: var(--accent3);
+    margin-bottom: 1rem;
+    opacity: 0.7;
+  }
+  .project-card h3 { font-size: 1.3rem; font-weight: 600; margin-bottom: 0.75rem; }
+  .project-card p { color: var(--muted); line-height: 1.7; font-size: 0.95rem; margin-bottom: 1.5rem; }
+  .project-tech { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+  .project-links { display: flex; gap: 1rem; }
+  .project-link {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-family: 'Fira Code', monospace;
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.9rem;
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+  .project-link:hover { color: var(--accent3); border-color: var(--accent3); }
+  .featured-badge {
+    position: absolute;
+    top: 1.5rem; right: 1.5rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  /* CONTACT */
+  #contact { background: var(--bg); }
+  .contact-wrapper {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .contact-wrapper .section-line { margin: 0 auto 3rem; }
+  .contact-email {
+    font-size: 1.3rem;
+    font-family: 'Fira Code', monospace;
+    color: var(--accent3);
+    margin-bottom: 2.5rem;
+    display: block;
+    text-decoration: none;
+  }
+  .contact-email:hover { color: var(--cyan); }
+  .social-links { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
+  .social-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+    text-decoration: none;
+    border: 1px solid var(--border);
+    padding: 0.7rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+  }
+  .social-link:hover { color: var(--accent3); border-color: var(--accent3); background: rgba(124,58,237,0.05); }
+
+  /* FOOTER */
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    padding: 2rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  footer p { color: var(--muted); font-size: 0.85rem; font-family: 'Fira Code', monospace; }
+  footer span { color: var(--accent3); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+  /* RESPONSIVE */
+  @media(max-width:768px) {
+    nav { padding: 1rem 1.5rem; }
+    nav ul { gap: 1.5rem; }
+    #hero, section { padding: 4rem 1.5rem; }
+    .about-grid { grid-template-columns: 1fr; }
+    .avatar-ring { display: none; }
+    footer { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo"><span>&lt;</span>MS<span>/&gt;</span></div>
+  <ul>
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<section id="hero">
+  <div class="grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="dot"></div>
+      Available for opportunities
+    </div>
+    <h1 class="hero-name">
+      <span class="gradient-text">Mohit Sagar</span>
+    </h1>
+    <p class="hero-subtitle">
+      <span>$</span> Full Stack Developer &amp; Problem Solver
+    </p>
+    <p class="hero-desc">
+      B.Tech CSE Final Year Student at MIT BSR, passionate about building 
+      scalable web applications with modern technologies. Turning ideas into 
+      elegant digital experiences.
+    </p>
+    <div class="hero-buttons">
+      <a href="#projects" class="btn-primary"><span>View My Work</span></a>
+      <a href="#contact" class="btn-secondary">Get In Touch</a>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="section-label">// about me</div>
+  <h2 class="section-title">Who I Am</h2>
+  <div class="section-line"></div>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>
+        Hello! I'm <strong style="color:var(--accent3)">Mohit Sagar</strong>, a passionate Full Stack Developer 
+        pursuing B.Tech in Computer Science Engineering (4th Year) at 
+        <strong style="color:var(--cyan)">MIT BSR (Meerut Institute of Technology, Baghpat Road)</strong>.
+      </p>
+      <p>
+        I specialize in building end-to-end web applications using React, Node.js, and modern 
+        JavaScript frameworks. I love crafting clean, efficient code and designing intuitive 
+        user experiences that make a real difference.
+      </p>
+      <p>
+        When I'm not coding, I enjoy exploring new technologies, contributing to open-source, 
+        and collaborating with like-minded developers. I'm also proud to collaborate with my 
+        peer <strong style="color:var(--accent3)">Chanchal Singh</strong> on various projects.
+      </p>
+      <div class="about-stats">
+        <div class="stat-card">
+          <div class="stat-num">4th</div>
+          <div class="stat-label">Year B.Tech</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">10+</div>
+          <div class="stat-label">Projects Built</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">2+</div>
+          <div class="stat-label">Years Coding</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">∞</div>
+          <div class="stat-label">Cups of Tea</div>
+        </div>
+      </div>
+    </div>
+    <div class="about-visual">
+      <div class="avatar-ring">
+        <div class="orbit-dot"></div>
+        <div class="avatar-inner">👨‍💻</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="section-label">// tech stack</div>
+  <h2 class="section-title">Skills &amp; Technologies</h2>
+  <div class="section-line"></div>
+  <div class="skills-grid">
+    <div class="skill-card">
+      <div class="skill-icon">🎨</div>
+      <h3>Frontend Development</h3>
+      <div class="skill-tags">
+        <span class="tag">HTML5</span>
+        <span class="tag">CSS3</span>
+        <span class="tag">JavaScript</span>
+        <span class="tag">React.js</span>
+        <span class="tag">Tailwind CSS</span>
+        <span class="tag">Bootstrap</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">⚙️</div>
+      <h3>Backend Development</h3>
+      <div class="skill-tags">
+        <span class="tag cyan">Node.js</span>
+        <span class="tag cyan">Express.js</span>
+        <span class="tag cyan">REST APIs</span>
+        <span class="tag cyan">JWT Auth</span>
+        <span class="tag cyan">Socket.io</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🗄️</div>
+      <h3>Database &amp; Tools</h3>
+      <div class="skill-tags">
+        <span class="tag green">MongoDB</span>
+        <span class="tag green">MySQL</span>
+        <span class="tag green">Git/GitHub</span>
+        <span class="tag green">VS Code</span>
+        <span class="tag green">Postman</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🚀</div>
+      <h3>Other Skills</h3>
+      <div class="skill-tags">
+        <span class="tag">DSA (Java)</span>
+        <span class="tag">Python</span>
+        <span class="tag">C/C++</span>
+        <span class="tag">Linux</span>
+        <span class="tag">Figma</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="section-label">// my work</div>
+  <h2 class="section-title">Featured Projects</h2>
+  <div class="section-line"></div>
+  <div class="projects-grid">
+    <div class="project-card">
+      <div class="featured-badge">FEATURED</div>
+      <div class="project-num">01 // Portfolio Website</div>
+      <h3>Personal Portfolio</h3>
+      <p>A fully responsive dark-themed portfolio website built with HTML, CSS, and vanilla JavaScript. Features smooth animations, glassmorphism effects, and a modern dark aesthetic.</p>
+      <div class="project-tech">
+        <span class="tag">HTML5</span>
+        <span class="tag">CSS3</span>
+        <span class="tag">JavaScript</span>
+      </div>
+      <div class="project-links">
+        <a href="#" class="project-link">→ Live Demo</a>
+        <a href="#" class="project-link">⌥ GitHub</a>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-num">02 // Full Stack App</div>
+      <h3>Task Management App</h3>
+      <p>A real-time task management application with user authentication, drag-and-drop functionality, and collaborative features built with React and Node.js backend.</p>
+      <div class="project-tech">
+        <span class="tag">React</span>
+        <span class="tag cyan">Node.js</span>
+        <span class="tag green">MongoDB</span>
+      </div>
+      <div class="project-links">
+        <a href="#" class="project-link">→ Live Demo</a>
+        <a href="#" class="project-link">⌥ GitHub</a>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-num">03 // E-Commerce</div>
+      <h3>E-Commerce Platform</h3>
+      <p>A complete e-commerce solution with product management, cart functionality, payment integration, and admin dashboard. RESTful API with JWT authentication.</p>
+      <div class="project-tech">
+        <span class="tag">React</span>
+        <span class="tag cyan">Express</span>
+        <span class="tag green">MySQL</span>
+      </div>
+      <div class="project-links">
+        <a href="#" class="project-link">→ Live Demo</a>
+        <a href="#" class="project-link">⌥ GitHub</a>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-num">04 // Real-Time</div>
+      <h3>Chat Application</h3>
+      <p>Real-time chat application with private messaging, group chats, file sharing, and online status indicators. Built with Socket.io for seamless real-time communication.</p>
+      <div class="project-tech">
+        <span class="tag">React</span>
+        <span class="tag cyan">Socket.io</span>
+        <span class="tag green">MongoDB</span>
+      </div>
+      <div class="project-links">
+        <a href="#" class="project-link">→ Live Demo</a>
+        <a href="#" class="project-link">⌥ GitHub</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="contact-wrapper">
+    <div class="section-label">// contact</div>
+    <h2 class="section-title">Let's Connect</h2>
+    <div class="section-line"></div>
+    <p style="color:var(--muted); line-height:1.8; margin-bottom:2rem; font-size:1.05rem;">
+      I'm currently open to internship opportunities and final year projects. 
+      Whether you have a question, a project idea, or just want to say hi — my inbox is always open!
+    </p>
+    <a href="mailto:mohitsagar@email.com" class="contact-email">mohitsagar@email.com</a>
+    <div class="social-links">
+      <a href="#" class="social-link">📁 GitHub</a>
+      <a href="#" class="social-link">💼 LinkedIn</a>
+      <a href="#" class="social-link">🐦 Twitter</a>
+      <a href="#" class="social-link">📄 Resume</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Designed &amp; Built by <span>Mohit Sagar</span> &amp; <span>Chanchal Singh</span></p>
+  <p>MIT BSR | B.Tech CSE | <span>2025</span></p>
+</footer>
+
+<script>
+  // Scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.skill-card, .project-card, .stat-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(30px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease, border-color 0.3s, box-shadow 0.3s';
+    observer.observe(el);
+  });
+
+  // Active nav link
+  window.addEventListener('scroll', () => {
+    const sections = document.querySelectorAll('section[id]');
+    const links = document.querySelectorAll('nav a');
+    sections.forEach((section, i) => {
+      const rect = section.getBoundingClientRect();
+      if (rect.top <= 100 && rect.bottom >= 100) {
+        links.forEach(l => l.style.color = '');
+        if (links[i]) links[i].style.color = 'var(--accent3)';
+      }
+    });
+  });
+</script>
+</body>
+</html>
